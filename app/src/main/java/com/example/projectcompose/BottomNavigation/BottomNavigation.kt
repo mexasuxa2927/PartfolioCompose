@@ -13,18 +13,13 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
-import androidx.compose.material.ContentAlpha
-import androidx.compose.material.Text
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CardElevation
 import androidx.compose.material3.Icon
-import androidx.compose.material3.LocalContentColor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -37,16 +32,18 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.projectcompose.R
+import com.example.projectcompose.Utils.ActionListner
+import com.example.projectcompose.ViewModel.SharedViewModel
 
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun BottomNavigationMainScreen() {
+fun BottomNavigationMainScreen(actionListner: ActionListner,sharedViewModel: SharedViewModel) {
     val navController = rememberNavController()
 
 
     Box(modifier = Modifier.fillMaxSize()){
-        BottomNavigationGraph(navController = navController)
+        BottomNavigationGraph(navController = navController,actionListner,sharedViewModel)
         Column( modifier = Modifier
             .align(Alignment.BottomCenter)
             .padding(horizontal = 10.dp)){
@@ -128,5 +125,5 @@ fun RowScope.AddItem(
 @Preview
 @Composable
 fun checkUI(){
-    BottomNavigationMainScreen()
+
 }
