@@ -17,10 +17,10 @@ fun BottomNavigationGraph(navController: NavHostController,actionListner: Action
             HomeScreen(actionListner, sharedViewModel =sharedViewModel )
         }
         composable(BottomNavItem.Heart.screen_route) {
-            HeartScreen()
+            HeartScreen(actionListner,sharedViewModel)
         }
         composable(BottomNavItem.Shopping.screen_route) {
-            ShoppingScreen()
+            ShoppingScreen(actionListner,sharedViewModel)
         }
     }
 }

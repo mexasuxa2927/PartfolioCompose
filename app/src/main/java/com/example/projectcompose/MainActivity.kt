@@ -4,12 +4,10 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.viewModels
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.projectcompose.Utils.ActionListner
@@ -62,7 +60,7 @@ class MainActivity : ComponentActivity(),ActionListner {
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
-    ProjectComposeTheme {
-
-    }
+  
 }
+
+

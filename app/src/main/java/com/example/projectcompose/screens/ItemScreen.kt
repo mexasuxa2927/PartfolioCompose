@@ -1,5 +1,6 @@
 package com.example.projectcompose.screens
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -19,20 +20,24 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
 import com.example.projectcompose.DataMadels.ProductData
+import com.example.projectcompose.DataMadels.ProductOrder
 import com.example.projectcompose.R
+import com.example.projectcompose.ViewModel.MyViewModel
 import com.example.projectcompose.ViewModel.SharedViewModel
 import com.skydoves.landscapist.glide.GlideImage
 
 @Composable
 fun ItemScreen( sharedViewModel: SharedViewModel) {
-    var productData  =  sharedViewModel.sharedata
+    val productData  =  sharedViewModel.sharedata
     ScreenUi(productData = productData!!)
 
 }
@@ -40,6 +45,10 @@ fun ItemScreen( sharedViewModel: SharedViewModel) {
 @Composable
 private fun ScreenUi(productData: ProductData?){
     var navController   = rememberNavController()
+    var viewmodel:MyViewModel  = hiltViewModel()
+
+    var context   = LocalContext.current
+
    Column(modifier = Modifier.fillMaxSize()) {
        LazyColumn{
            item {
@@ -64,7 +73,7 @@ private fun ScreenUi(productData: ProductData?){
                            Modifier
                                .fillMaxWidth()
                                .weight(7f)) {
-                           Text(text = productData!!.product_name, fontWeight = FontWeight.Bold, color = Color.Black)
+                           Text(text = productData!!.product_name!!, fontWeight = FontWeight.Bold, color = Color.Black)
                        }
                        Column(
                            Modifier
@@ -74,7 +83,7 @@ private fun ScreenUi(productData: ProductData?){
 
                        }
                    }
-                   Text(text = productData!!.description)
+                   Text(text = productData!!.description!!)
 
 
                }
@@ -86,7 +95,15 @@ private fun ScreenUi(productData: ProductData?){
                .fillMaxSize()
                .weight(2f)
                .padding(horizontal = 25.dp)
-               .padding(bottom = 25.dp)) {
+               .padding(bottom = 25.dp)
+               .clickable {
+                   //Add to card click
+
+                   viewmodel.addOrder(ProductOrder(productData = productData!!, count = 1))
+                   Toast
+                       .makeText(context, "Add to Card done", Toast.LENGTH_SHORT)
+                       .show()
+               }) {
 
            Column(modifier = Modifier
                .fillMaxWidth()
@@ -112,8 +129,6 @@ private fun ScreenUi(productData: ProductData?){
 @Preview
 @Composable
 private fun ShowUI(){
-
-
 }
 
 

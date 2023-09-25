@@ -1,9 +1,11 @@
 package com.example.projectcompose.screens.mainpageScreens
 
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -67,7 +69,6 @@ private fun ScreenUi(actionListner: ActionListner,sharedViewModel: SharedViewMod
     val myViewmodel : MyViewModel  = hiltViewModel1()
 
     val listdata  = remember{ mutableStateListOf<ProductData>() }
-    val listLike  =  remember{ mutableStateListOf<ProductData>() }
     var searchfield  by remember { mutableStateOf(TextFieldValue("")) }
     val data  by myViewmodel.getAllProduct(if(searchfield.text.trim().length>0)searchfield.text.trim() else "").observeAsState(initial = Result.failure(
         Throwable()
@@ -82,7 +83,7 @@ private fun ScreenUi(actionListner: ActionListner,sharedViewModel: SharedViewMod
     }
 
 
-    LazyColumn{
+    LazyColumn(modifier = Modifier){
         item {
             Column(modifier = Modifier.padding(top = 5.dp, start = 20.dp, end = 20.dp)) {
 
@@ -129,7 +130,6 @@ private fun ScreenUi(actionListner: ActionListner,sharedViewModel: SharedViewMod
                     Spacer(modifier = Modifier.height(10.dp))
 
 
-
             }
 
         }
@@ -141,6 +141,9 @@ private fun ScreenUi(actionListner: ActionListner,sharedViewModel: SharedViewMod
 
             ItemViewList(data = listdata[it],actionListner,sharedViewModel)
         }
+        item {
+            Spacer(modifier = Modifier.height(50.dp))
+        }
 
     }
 
@@ -149,25 +152,46 @@ private fun ScreenUi(actionListner: ActionListner,sharedViewModel: SharedViewMod
 
 
 
+@SuppressLint("SuspiciousIndentation", "UnrememberedMutableState")
 @Composable
 fun ItemViewList(data: ProductData,actionListner: ActionListner,sharedViewModel: SharedViewModel) {
-        val viewmodel :MyViewModel   = hiltViewModel1()
-        Card(modifier = Modifier
-            .fillMaxWidth()
-            .clickable {
+    val viewModel:MyViewModel  = hiltViewModel1()
+    val checklike by viewModel.checkLike(data).observeAsState(initial = false)
 
-                sharedViewModel.setData(data)
-                actionListner.gotoActinNavigation(NavigationScreen.MainScreen.route,NavigationScreen.ItemScreen.route+"/${data.id}",false)
-
-            }
-            .padding(horizontal = 20.dp)
-            .height(250.dp), shape = RoundedCornerShape(5), elevation = CardDefaults.cardElevation(defaultElevation = 10.dp)) {
+    Card(modifier = Modifier
+        .fillMaxWidth()
+        .clickable {
+            sharedViewModel.setData(data)
+            actionListner.gotoActinNavigation(
+                NavigationScreen.MainScreen.route,
+                NavigationScreen.ItemScreen.route + "/${data.id}",
+                false
+            )
+            viewModel.setLIke(productData = data)
+        }
+        .padding(horizontal = 20.dp)
+        .height(250.dp), shape = RoundedCornerShape(5), elevation = CardDefaults.cardElevation(defaultElevation = 10.dp)) {
             Box(modifier = Modifier.fillMaxSize()){
                 GlideImage(imageModel = {  data.photo})
+                Column(modifier = Modifier.align(Alignment.TopEnd).padding(top = 20.dp, end = 20.dp).background(color = Color.White, shape = RoundedCornerShape(50))
+                    .clip(RoundedCornerShape(50))
+                    .height(40.dp).clickable {
+                        if(checklike){
+                            viewModel.removeLike(data)
+                        }else{
+                            viewModel.setLIke(data)
+                        }
+                    }
+                    .width(40.dp), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
+                    Icon(painter = painterResource(id = R.drawable.heart_icon), contentDescription = "",
+                        tint = if(checklike) colorResource(id = R.color.orange)else Color.Gray,
+                        modifier =Modifier.height(24.dp).width(24.dp)
+                    )
+                }
             }
         }
         Spacer(modifier = Modifier.height(5.dp))
-        Text(text = data.product_name, modifier = Modifier
+        Text(text = data.product_name!!, modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 20.dp), color = Color.Black)
         Spacer(modifier = Modifier.height(10.dp))
