@@ -7,9 +7,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.projectcompose.Utils.ActionListner
 import com.example.projectcompose.ViewModel.SharedViewModel
+import com.example.projectcompose.screens.InfoScreen
 import com.example.projectcompose.screens.ItemScreen
 import com.example.projectcompose.screens.LoginScreen
 import com.example.projectcompose.screens.MainScreen
+import com.example.projectcompose.screens.SettingScreen
 import com.example.projectcompose.screens.SignUpScreen
 import com.example.projectcompose.screens.SplashScreen
 
@@ -33,6 +35,12 @@ fun NavigationGraph (navController: NavHostController,actionListner: ActionListn
         }
         composable(NavigationScreen.MainScreen.route){
             MainScreen(actionListner,sharedViewModel)
+        }
+        composable(NavigationScreen.SettingsScreen.route){
+            SettingScreen(actionListner)
+        }
+        composable(NavigationScreen.InfoScreen.route){
+            InfoScreen(actionListner = actionListner)
         }
 
     }

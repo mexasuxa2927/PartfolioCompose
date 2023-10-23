@@ -29,6 +29,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -50,10 +51,11 @@ ScreenUi(actionListner = actionListner, sharedViewModel = sharedViewModel)
 @Composable
 private fun ScreenUi(actionListner: ActionListner, sharedViewModel: SharedViewModel){
     val myViewModel: MyViewModel = hiltViewModel()
-    val listlike = myViewModel.readOrder().observeAsState(initial = Result.failure(Throwable()))
+    val listOrder = myViewModel.readOrder().observeAsState(initial = Result.failure(Throwable()))
     var data  = remember{ mutableStateListOf<ProductOrder>() }
+    val context =  LocalContext.current
 
-    listlike.value.onSuccess {
+    listOrder.value.onSuccess {
         data.clear()
         data.addAll(it)
     }.onFailure {
@@ -70,7 +72,12 @@ private fun ScreenUi(actionListner: ActionListner, sharedViewModel: SharedViewMo
            Row(modifier = Modifier.padding(24.dp)) {
                Column(modifier = Modifier
                    .fillMaxWidth()
-                   .height(64.dp)
+                   .height(64.dp).clickable {
+                       myViewModel.deleteOrders()
+                       data.clear()
+
+
+                   }
                    .background(
                        color = colorResource(
                            id = R.color.orange

@@ -213,7 +213,15 @@ class MyViewModel @Inject constructor(private val repository: Repository):ViewMo
         val ref =  databasse.getReference(user!!.uid)
         ref.child("order").child(productOrder.productData.id.toString()).removeValue()
     }
-    
+
+    fun deleteOrders(){
+        val ref   = databasse.getReference(user!!.uid)
+        ref.child("order").removeValue()
+    }
+
+    fun logoutUser(){
+        firebaseGetAuth().signOut()
+    }
 }
 
 

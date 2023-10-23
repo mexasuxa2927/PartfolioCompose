@@ -1,4 +1,5 @@
 package com.example.projectcompose.screens
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.material.DrawerState
 import androidx.compose.material.DrawerValue
 import androidx.compose.material.ModalDrawer
 import androidx.compose.material.Text
@@ -23,6 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
@@ -32,11 +35,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.projectcompose.BottomNavigation.BottomNavigationMainScreen
 import com.example.projectcompose.NavigationDrawer.NavigationDrowerItem
 import com.example.projectcompose.R
 import com.example.projectcompose.Utils.ActionListner
+import com.example.projectcompose.ViewModel.MyViewModel
 import com.example.projectcompose.ViewModel.SharedViewModel
+import com.example.projectcompose.navigation.NavigationScreen
 import kotlinx.coroutines.launch
 
 @Composable
@@ -50,14 +56,14 @@ ScreenUI(actionListner = actionListner,sharedViewModel)
 private fun  ScreenUI(actionListner: ActionListner?,sharedViewModel: SharedViewModel){
     val mdrowerstate  = rememberDrawerState(DrawerValue.Closed)
     val scope  = rememberCoroutineScope()
-    
+    val context    = LocalContext.current
     Column(modifier = Modifier.fillMaxSize()) {
 
         ModalDrawer(
 
             drawerState = mdrowerstate,
             drawerContent = {
-                DrowerContentUi()
+                DrowerContentUi(actionListner = actionListner!!,mdrowerstate)
             },
             content = {
                 Column(Modifier.fillMaxSize()) {
@@ -76,12 +82,17 @@ private fun  ScreenUI(actionListner: ActionListner?,sharedViewModel: SharedViewM
                                     }
                                 })
                             Text(text = "E-Shop", modifier = Modifier.align(Alignment.Center), fontSize = 22.sp, fontFamily = FontFamily(Font(R.font.spartan)), fontWeight = FontWeight.Bold)
-                            Image(painter = painterResource(id = R.drawable.shopping_icon), contentDescription ="", modifier = Modifier
+                            Image(painter = painterResource(id = R.drawable.bell_98), contentDescription ="", modifier = Modifier
                                 .align(
                                     Alignment.CenterEnd
                                 )
                                 .width(24.dp)
-                                .height(24.dp) )
+                                .height(24.dp)
+                                .clickable {
+                                    Toast
+                                        .makeText(context, "You have no news", Toast.LENGTH_LONG)
+                                        .show()
+                                } )
                         }
                     }
                     Column(Modifier.weight(9f)) {
@@ -97,7 +108,7 @@ private fun  ScreenUI(actionListner: ActionListner?,sharedViewModel: SharedViewM
 }
 
 @Composable
-private fun DrowerContentUi() {
+private fun DrowerContentUi(actionListner: ActionListner, mdrowerstate: DrawerState) {
     val brush   =Brush.verticalGradient(listOf(colorResource(id = R.color.orange),Color.White))
     Column(modifier = Modifier.fillMaxWidth()) {
         Column(
@@ -109,18 +120,41 @@ private fun DrowerContentUi() {
         }
 
         Column(modifier = Modifier.fillMaxWidth()) {
-            drawerItem(navigationDrowerItem = NavigationDrowerItem.Profile)
+            drawerItem(navigationDrowerItem = NavigationDrowerItem.Profile, actionListner = actionListner,mdrowerstate)
             Spacer(modifier = Modifier.height(10.dp))
-            drawerItem(navigationDrowerItem = NavigationDrowerItem.Settings)
-            Spacer(modifier = Modifier.height(10.dp))
-            drawerItem(navigationDrowerItem = NavigationDrowerItem.Info)
+            drawerItem(navigationDrowerItem = NavigationDrowerItem.Info, actionListner = actionListner,mdrowerstate)
         }
     }
 }
 
 @Composable
-fun drawerItem(navigationDrowerItem: NavigationDrowerItem) {
+fun drawerItem(navigationDrowerItem: NavigationDrowerItem,actionListner: ActionListner,mdrowerstate: DrawerState) {
+    val scope  = rememberCoroutineScope()
+    val viewModel:MyViewModel  =  hiltViewModel()
     Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier
+        .clickable {
+            if (navigationDrowerItem.route.equals("Logout")) {
+                scope.launch {
+                    mdrowerstate.close()
+                }
+                viewModel.logoutUser()
+                actionListner.gotoActinNavigation(
+                    NavigationScreen.MainScreen.route,
+                    NavigationScreen.LoginScreen.route,
+                    true
+                )
+
+            } else {
+                scope.launch {
+                    mdrowerstate.close()
+                }
+                actionListner.gotoActinNavigation(
+                    NavigationScreen.MainScreen.route,
+                    NavigationScreen.InfoScreen.route,
+                    false
+                )
+            }
+        }
         .fillMaxWidth()
         .padding(start = 20.dp)) {
         Icon(painter = painterResource(id = navigationDrowerItem.icon) , contentDescription ="", modifier = Modifier

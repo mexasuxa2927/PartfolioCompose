@@ -1,8 +1,6 @@
 package com.example.projectcompose.screens
 
 import android.annotation.SuppressLint
-import android.content.Context
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -48,7 +46,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Observer
 import com.example.projectcompose.R
 import com.example.projectcompose.Utils.ActionListner
-import com.example.projectcompose.Utils.Constants
 import com.example.projectcompose.ViewModel.MyViewModel
 import com.example.projectcompose.navigation.NavigationScreen
 
@@ -316,7 +313,7 @@ private fun ScreenUI(actionListner: ActionListner?,viewModel: MyViewModel?) {
             .weight(weight = 1f), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
 
             Text(text = "You have an account?", fontSize =16.sp, color = colorResource(id = R.color.white_gray) )
-            Text(text = "Log In", fontSize = 18.sp, color = colorResource(id = R.color.orange), modifier = Modifier.clickable { })
+            Text(text = "Log In", fontSize = 18.sp, color = colorResource(id = R.color.orange), modifier = Modifier.clickable {actionListner!!.gotoActinNavigation(NavigationScreen.SignUpScreen.route,NavigationScreen.LoginScreen.route,true) })
 
         }
 

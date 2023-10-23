@@ -15,11 +15,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -66,6 +68,7 @@ fun HomeScreen(actionListner: ActionListner,sharedViewModel: SharedViewModel) {
 @Composable
 private fun ScreenUi(actionListner: ActionListner,sharedViewModel: SharedViewModel){
 
+
     val myViewmodel : MyViewModel  = hiltViewModel1()
 
     val listdata  = remember{ mutableStateListOf<ProductData>() }
@@ -76,10 +79,10 @@ private fun ScreenUi(actionListner: ActionListner,sharedViewModel: SharedViewMod
     data .onSuccess {
         listdata.clear()
         listdata.addAll(it)
+
     }.onFailure {
         listdata.clear()
         listdata.addAll(emptyList())
-
     }
 
 
@@ -144,6 +147,11 @@ private fun ScreenUi(actionListner: ActionListner,sharedViewModel: SharedViewMod
         item {
             Spacer(modifier = Modifier.height(50.dp))
         }
+        item {
+            Row(horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth().wrapContentHeight()) {
+                CircularProgressIndicator(modifier = Modifier.width(64.dp))
+            }
+        }
 
     }
 
@@ -173,19 +181,25 @@ fun ItemViewList(data: ProductData,actionListner: ActionListner,sharedViewModel:
         .height(250.dp), shape = RoundedCornerShape(5), elevation = CardDefaults.cardElevation(defaultElevation = 10.dp)) {
             Box(modifier = Modifier.fillMaxSize()){
                 GlideImage(imageModel = {  data.photo})
-                Column(modifier = Modifier.align(Alignment.TopEnd).padding(top = 20.dp, end = 20.dp).background(color = Color.White, shape = RoundedCornerShape(50))
+                Column(modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(top = 20.dp, end = 20.dp)
+                    .background(color = Color.White, shape = RoundedCornerShape(50))
                     .clip(RoundedCornerShape(50))
-                    .height(40.dp).clickable {
-                        if(checklike){
+                    .height(40.dp)
+                    .clickable {
+                        if (checklike) {
                             viewModel.removeLike(data)
-                        }else{
+                        } else {
                             viewModel.setLIke(data)
                         }
                     }
                     .width(40.dp), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
                     Icon(painter = painterResource(id = R.drawable.heart_icon), contentDescription = "",
                         tint = if(checklike) colorResource(id = R.color.orange)else Color.Gray,
-                        modifier =Modifier.height(24.dp).width(24.dp)
+                        modifier = Modifier
+                            .height(24.dp)
+                            .width(24.dp)
                     )
                 }
             }

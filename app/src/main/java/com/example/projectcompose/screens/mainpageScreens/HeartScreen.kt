@@ -72,7 +72,7 @@ private fun ScreenUi(actionListner: ActionListner, sharedViewModel: SharedViewMo
 
 @Composable
 private fun ItemViewLazyColumn(data: ProductData, list: SnapshotStateList<ProductData>,sharedViewModel :SharedViewModel,actionListner :ActionListner) {
-    var viewModel:MyViewModel = hiltViewModel()
+    val viewModel:MyViewModel = hiltViewModel()
     Box(modifier = Modifier
         .fillMaxWidth()
         .wrapContentHeight().clickable {
